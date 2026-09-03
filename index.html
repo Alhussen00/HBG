@@ -191,7 +191,23 @@
     }
     .mobile-menu a{display:block;padding:11px 0;color:#ddd;border-bottom:1px solid var(--line)}
     .mobile-menu.open{display:block}
-  </style>
+  
+/* Accounts & reviews */
+.account-btn{background:transparent;border:1px solid var(--gold);color:var(--gold2);padding:9px 15px;border-radius:7px;cursor:pointer;font-weight:700;font-family:inherit}
+.account-btn:hover{background:var(--gold);color:#111}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:3000;align-items:center;justify-content:center;padding:18px}
+.modal.open{display:flex}.modal-box{width:min(520px,100%);max-height:92vh;overflow:auto;background:#111;border:1px solid var(--gold);border-radius:16px;padding:28px;position:relative}
+.close{position:absolute;left:16px;top:10px;font-size:28px;cursor:pointer;color:#aaa}
+.tabs{display:flex;gap:8px;margin:18px 0}.tab{flex:1;padding:10px;border:1px solid var(--line);background:#181818;color:#ddd;border-radius:7px;cursor:pointer;font-family:inherit}.tab.active{background:var(--gold2);color:#111}
+.form{display:grid;gap:12px}.form input,.form select,.form textarea{width:100%;padding:12px;background:#0a0a0a;border:1px solid #333;color:#fff;border-radius:7px;font-family:inherit}.form textarea{min-height:90px;resize:vertical}
+.user-bar{display:none;align-items:center;gap:10px}.user-bar.show{display:flex}.badge{padding:5px 9px;border-radius:20px;background:rgba(217,167,43,.14);color:var(--gold2);font-size:12px}
+.reviews-wrap{max-width:900px;margin:auto}.review-form{display:none;background:#111;border:1px solid var(--line);border-radius:15px;padding:22px;margin-bottom:20px}.review-form.show{display:block}
+.stars{display:flex;gap:6px;direction:ltr}.stars button{background:none;border:0;color:#666;font-size:28px;cursor:pointer}.stars button.active{color:var(--gold2)}
+.review{background:#111;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:12px}.review-head{display:flex;justify-content:space-between;gap:12px;align-items:center}.review-meta{color:#999;font-size:12px}.review-stars{color:var(--gold2);letter-spacing:2px}.admin-actions{display:flex;gap:8px;margin-top:10px}.danger{background:#8d2020;color:#fff;border:0;padding:7px 11px;border-radius:6px;cursor:pointer}.approve{background:#246b3a;color:#fff;border:0;padding:7px 11px;border-radius:6px;cursor:pointer}
+.admin-panel{display:none;background:#101010;border:1px solid var(--gold);border-radius:15px;padding:25px;margin-bottom:25px}.admin-panel.show{display:block}
+.note{color:#aaa;font-size:13px;margin-top:8px}
+
+</style>
 </head>
 <body>
 
@@ -205,6 +221,8 @@
       <a href="#why">لماذا HBG؟</a>
       <a href="#contact">تواصل معنا</a>
     </nav>
+    <div class="user-bar" id="userBar"><span class="badge" id="userName"></span><button class="account-btn" id="logoutBtn">خروج</button></div>
+    <button class="account-btn" id="accountBtn">دخول / حساب</button>
     <a class="phone-btn" href="tel:0922195163">☎ 0922195163</a>
     <div class="menu" id="menu">☰</div>
   </div>
@@ -214,6 +232,7 @@
     <a href="#about">عن المركز</a>
     <a href="#why">لماذا HBG؟</a>
     <a href="#contact">تواصل معنا</a>
+    <a href="#reviews">التقييمات</a>
   </div>
 </header>
 
@@ -313,17 +332,76 @@
             <a class="outline-btn" href="https://wa.me/218922195163" target="_blank" rel="noopener">واتساب</a>
           </div>
         </div>
-        <div class="map">
+        <a class="map" href="https://maps.app.goo.gl/dvdZ3AcZ6YGXFzfp9" target="_blank" rel="noopener" aria-label="فتح موقع HBG على خرائط Google">
           <div>
             <span>⌖</span>
             <h3>HBG Auto Service Center</h3>
             <p style="color:#999">زليتن - ليبيا</p>
           </div>
-        </div>
+        </a>
       </div>
     </div>
   </section>
+
+<section id="reviews">
+  <div class="container">
+    <div class="section-head">
+      <div class="tag">آراء العملاء</div>
+      <h2>تقييمات مركز HBG</h2>
+      <p>التقييم متاح فقط للعملاء الذين لديهم حساب مسجل في الموقع.</p>
+    </div>
+    <div class="reviews-wrap">
+      <div class="admin-panel" id="adminPanel">
+        <h3>لوحة الإدارة</h3>
+        <p>رئيس الإدارة: <span class="gold">الحسين طلال بن عائشة</span></p>
+        <p class="note">يمكنك اعتماد التقييمات أو حذفها.</p>
+      </div>
+      <div class="review-form" id="reviewForm">
+        <h3>أضف تقييمك</h3>
+        <div class="stars" id="starPicker">
+          <button data-v="1">★</button><button data-v="2">★</button><button data-v="3">★</button><button data-v="4">★</button><button data-v="5">★</button>
+        </div>
+        <form class="form" id="reviewSubmit">
+          <textarea id="reviewText" placeholder="اكتب رأيك في الخدمة..." required></textarea>
+          <button class="hero-btn" type="submit">إرسال التقييم</button>
+        </form>
+      </div>
+      <div id="loginReviewMsg" class="note">سجّل الدخول بحسابك حتى تتمكن من إضافة تقييم.</div>
+      <div id="reviewsList"></div>
+    </div>
+  </div>
+</section>
+
 </main>
+
+
+<div class="modal" id="accountModal">
+  <div class="modal-box">
+    <span class="close" id="closeModal">×</span>
+    <h2>حساب HBG</h2>
+    <div class="tabs">
+      <button class="tab active" data-tab="login">تسجيل الدخول</button>
+      <button class="tab" data-tab="register">إنشاء حساب</button>
+    </div>
+    <form class="form" id="loginForm">
+      <input id="loginEmail" type="email" placeholder="البريد الإلكتروني" required>
+      <input id="loginPassword" type="password" placeholder="كلمة المرور" required>
+      <button class="hero-btn" type="submit">دخول</button>
+    </form>
+    <form class="form" id="registerForm" style="display:none">
+      <input id="regName" placeholder="الاسم الكامل" required>
+      <input id="regEmail" type="email" placeholder="البريد الإلكتروني" required>
+      <input id="regPassword" type="password" placeholder="كلمة المرور" minlength="4" required>
+      <select id="regRole">
+        <option value="customer">عميل</option>
+        <option value="employee">موظف</option>
+      </select>
+      <button class="hero-btn" type="submit">إنشاء الحساب</button>
+      <p class="note">حساب الإدارة لا يتم إنشاؤه من هذه الصفحة.</p>
+    </form>
+    <p class="note">رئيس الإدارة: الحسين طلال بن عائشة</p>
+  </div>
+</div>
 
 <div class="floating">
   <a class="float-btn" href="https://wa.me/218922195163" target="_blank" rel="noopener" aria-label="واتساب">◉</a>
@@ -338,14 +416,219 @@
 </footer>
 
 <script>
-  const menu = document.getElementById('menu');
-  const mobileMenu = document.getElementById('mobileMenu');
-  menu.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-  document.querySelectorAll('#mobileMenu a').forEach(a => {
-    a.addEventListener('click', () => mobileMenu.classList.remove('open'));
-  });
-  document.getElementById('year').textContent = new Date().getFullYear();
-</script>
 
+const $ = (id) => document.getElementById(id);
+
+const menu = $('menu');
+const mobileMenu = $('mobileMenu');
+if (menu && mobileMenu) {
+  menu.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+  document.querySelectorAll('#mobileMenu a').forEach(a =>
+    a.addEventListener('click', () => mobileMenu.classList.remove('open'))
+  );
+}
+const year = $('year');
+if (year) year.textContent = new Date().getFullYear();
+
+const ADMIN_EMAIL = 'admin@hbg.local';
+const ADMIN_NAME = 'الحسين طلال بن عائشة';
+
+let users = [];
+let reviews = [];
+let currentUser = null;
+
+try { users = JSON.parse(localStorage.getItem('hbgUsers') || '[]'); } catch(e) {}
+try { reviews = JSON.parse(localStorage.getItem('hbgReviews') || '[]'); } catch(e) {}
+try { currentUser = JSON.parse(localStorage.getItem('hbgCurrentUser') || 'null'); } catch(e) {}
+
+if (!users.some(u => u.email === ADMIN_EMAIL)) {
+  users.push({name: ADMIN_NAME, email: ADMIN_EMAIL, password: 'HBG2026', role: 'admin'});
+  saveUsers();
+}
+
+function saveUsers() { localStorage.setItem('hbgUsers', JSON.stringify(users)); }
+function saveReviews() { localStorage.setItem('hbgReviews', JSON.stringify(reviews)); }
+function saveSession() { localStorage.setItem('hbgCurrentUser', JSON.stringify(currentUser)); }
+
+const modal = $('accountModal');
+$('accountBtn')?.addEventListener('click', () => modal?.classList.add('open'));
+$('closeModal')?.addEventListener('click', () => modal?.classList.remove('open'));
+modal?.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  t.classList.add('active');
+  const register = t.dataset.tab === 'register';
+  $('registerForm').style.display = register ? 'grid' : 'none';
+  $('loginForm').style.display = register ? 'none' : 'grid';
+}));
+
+$('registerForm')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = $('regName').value.trim();
+  const email = $('regEmail').value.trim().toLowerCase();
+  const password = $('regPassword').value;
+  const role = $('regRole').value;
+
+  if (users.some(u => u.email === email)) {
+    alert('هذا البريد مسجل مسبقاً.');
+    return;
+  }
+
+  users.push({name, email, password, role});
+  saveUsers();
+  currentUser = {name, email, role};
+  saveSession();
+  modal?.classList.remove('open');
+  updateUI();
+  alert('تم إنشاء الحساب بنجاح.');
+});
+
+$('loginForm')?.addEventListener('submit', e => {
+  e.preventDefault();
+  const email = $('loginEmail').value.trim().toLowerCase();
+  const password = $('loginPassword').value;
+  const user = users.find(u => u.email === email && u.password === password);
+
+  if (!user) {
+    alert('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+    return;
+  }
+
+  currentUser = {name: user.name, email: user.email, role: user.role};
+  saveSession();
+  modal?.classList.remove('open');
+  updateUI();
+});
+
+$('logoutBtn')?.addEventListener('click', () => {
+  currentUser = null;
+  saveSession();
+  updateUI();
+});
+
+function updateUI() {
+  const logged = !!currentUser;
+  const admin = logged && currentUser.role === 'admin';
+
+  $('userBar')?.classList.toggle('show', logged);
+  if ($('accountBtn')) $('accountBtn').style.display = logged ? 'none' : 'inline-block';
+
+  if (logged && $('userName')) {
+    $('userName').textContent = currentUser.name + (admin ? ' — الإدارة' : '');
+  }
+
+  $('reviewForm')?.classList.toggle('show', logged);
+  if ($('loginReviewMsg')) $('loginReviewMsg').style.display = logged ? 'none' : 'block';
+  $('adminPanel')?.classList.toggle('show', admin);
+
+  renderReviews();
+}
+
+let selectedStars = 5;
+
+document.querySelectorAll('#starPicker button').forEach(button => {
+  button.addEventListener('click', () => {
+    selectedStars = Number(button.dataset.v);
+    paintStars();
+  });
+});
+
+function paintStars() {
+  document.querySelectorAll('#starPicker button').forEach(button => {
+    button.classList.toggle('active', Number(button.dataset.v) <= selectedStars);
+  });
+}
+
+$('reviewSubmit')?.addEventListener('submit', e => {
+  e.preventDefault();
+  if (!currentUser) return;
+
+  const text = $('reviewText').value.trim();
+  if (!text) return;
+
+  reviews.unshift({
+    id: Date.now(),
+    name: currentUser.name,
+    text,
+    stars: selectedStars,
+    date: new Date().toLocaleDateString('ar-LY'),
+    approved: currentUser.role === 'admin'
+  });
+
+  saveReviews();
+  $('reviewText').value = '';
+  renderReviews();
+
+  alert(currentUser.role === 'admin'
+    ? 'تم نشر التقييم.'
+    : 'تم إرسال تقييمك للمراجعة.');
+});
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;',
+    '"': '&quot;', "'": '&#39;'
+  }[char]));
+}
+
+function renderReviews() {
+  const list = $('reviewsList');
+  if (!list) return;
+
+  const admin = currentUser && currentUser.role === 'admin';
+  const visible = reviews.filter(r => r.approved || admin);
+
+  if (!visible.length) {
+    list.innerHTML = '<p class="note">لا توجد تقييمات منشورة حتى الآن.</p>';
+    return;
+  }
+
+  list.innerHTML = visible.map(r => `
+    <div class="review">
+      <div class="review-head">
+        <strong>${escapeHtml(r.name)}</strong>
+        <span class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span>
+      </div>
+      <div class="review-meta">${r.date}${r.approved ? '' : ' — بانتظار الاعتماد'}</div>
+      <p>${escapeHtml(r.text)}</p>
+      ${admin ? `
+        <div class="admin-actions">
+          ${!r.approved ? `<button class="approve" data-approve="${r.id}">اعتماد</button>` : ''}
+          <button class="danger" data-delete="${r.id}">حذف</button>
+        </div>` : ''}
+    </div>
+  `).join('');
+
+  list.querySelectorAll('[data-approve]').forEach(button => {
+    button.addEventListener('click', () => approveReview(Number(button.dataset.approve)));
+  });
+
+  list.querySelectorAll('[data-delete]').forEach(button => {
+    button.addEventListener('click', () => deleteReview(Number(button.dataset.delete)));
+  });
+}
+
+function approveReview(id) {
+  const review = reviews.find(r => r.id === id);
+  if (review) {
+    review.approved = true;
+    saveReviews();
+    renderReviews();
+  }
+}
+
+function deleteReview(id) {
+  if (confirm('هل تريد حذف التقييم؟')) {
+    reviews = reviews.filter(r => r.id !== id);
+    saveReviews();
+    renderReviews();
+  }
+}
+
+paintStars();
+updateUI();
+
+</script>
 </body>
 </html>
